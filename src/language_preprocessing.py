@@ -12,11 +12,11 @@ def clean_English_Vocab(line: str) -> list:
     return line.split()
 
 def clean_Vocab(line:str, alphabets) -> list:
-    hindi_dic = create_Alphabet_Dict(alphabets)
+    dic = create_Alphabet_Dict(alphabets)
     line = line.replace('-', ' ').replace(',', ' ')
     cleaned_line = ''
     for char in line:
-        if char in hindi_dic or char == ' ':
+        if char in dic or char == ' ':
             cleaned_line += char
     return cleaned_line.split()
 

@@ -7,26 +7,27 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.text import one_hot
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
-
-from language_preprocessing import clean_English_Vocab, clean_Vocab
     
-class Eng_Indic_Dataset():
-    def __init__(self, filename, lang_vocab_cleaner, alphabets):
+class Eng_Indic_Eng_Dataset():
+    def __init__(self, filename, input_characters, target_characters):
         
-        input_characters = set(list(' ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
-        target_characters = set(alphabets)
+        self.lang_alphabets, flag = (input_characters, True) if 'A' not in input_characters else (target_characters, False)
         
-        self.input_characters = sorted(list(input_characters))
-        self.target_characters = sorted(list(target_characters))
+        self.input_characters = sorted(list([' '] + input_characters))
+        self.target_characters = sorted(list(['\t','\n',' '] + target_characters))
         
-        self.lang1, self.lang2 = self.readXmlDataset(filename, lang_vocab_cleaner)
+        eng, lang = self.readXmlDataset(filename)
         
-        self.lang1_vocab_size = len(input_characters)
-        self.lang2_vocab_size = len(target_characters)
+        self.lang1, self.lang2 = (lang, eng) if flag else (eng, lang)
+        
+        self.lang2 = list(map(lambda x: '\t' + x + '\n', self.lang2))
+        
+        self.lang1_vocab_size = len(self.input_characters)
+        self.lang2_vocab_size = len(self.target_characters)
         self.max_lang1_length = max([len(txt) for txt in self.lang1])
         self.max_lang2_length = max([len(txt) for txt in self.lang2])
         
-        print("English to Hindi Dataset")
+        print("English to Indic Dataset")
         print("No.of samples:", len(self.lang1))
         print("No.of unique input tokens:", self.lang1_vocab_size)
         print("No.of unique output tokens:", self.lang2_vocab_size)
@@ -47,6 +48,7 @@ class Eng_Indic_Dataset():
 
     def encode_data(self):
         for i, (input_text, target_text) in enumerate(zip(self.lang1, self.lang2)):
+            # Here " " is padding
             for t, char in enumerate(input_text):
                 self.encoder_input_data[i, t, self.input_token_index[char]] = 1.0
             self.encoder_input_data[i, t + 1 :, self.input_token_index[" "]] = 1.0
@@ -59,13 +61,13 @@ class Eng_Indic_Dataset():
             
         return self.encoder_input_data, self.decoder_input_data, self.decoder_target_data
     
-    def readXmlDataset(self, filename:Path, lang_vocab_cleaner) -> tuple:
+    def readXmlDataset(self, filename:Path) -> tuple:
         transliterationCorpus = ET.parse(filename).getroot()
         lang1_words = []
         lang2_words = []
         for line in transliterationCorpus:
-            wordlist1 = clean_English_Vocab(line[0].text)
-            wordlist2 = lang_vocab_cleaner(line[1].text, self.target_characters)
+            wordlist1 = self.clean_English_Vocab(line[0].text)
+            wordlist2 = self.clean_Vocab(line[1].text, self.lang_alphabets)
             
             # Skip noisy data
             if len(wordlist1) != len(wordlist2):
@@ -75,9 +77,26 @@ class Eng_Indic_Dataset():
             for word in wordlist1:
                 lang1_words.append(word)
             for word in wordlist2:
-                lang2_words.append("\t" + word + "\n")
+                lang2_words.append(word)
 
         return lang1_words, lang2_words
+    
+    def clean_English_Vocab(self, line: str) -> list:
+        non_eng_letters_regex = re.compile('[^a-zA-Z ]')
+        line = line.replace('-', ' ').replace(',',' ').upper()
+        line = non_eng_letters_regex.sub('', line)
+        return line.split()
+
+    def clean_Vocab(self, line:str, alphabets) -> list:
+        dic = dict([(char, i) for i, char in enumerate(alphabets)])
+        line = line.replace('-', ' ').replace(',', ' ')
+        cleaned_line = ''
+        for char in line:
+            if char in dic or char == ' ':
+                cleaned_line += char
+        return cleaned_line.split()
+    
+    
     
 class Indic_Eng_Dataset():
     def __init__(self, filename, lang_vocab_cleaner, alphabets):
@@ -95,7 +114,7 @@ class Indic_Eng_Dataset():
         self.max_lang1_length = max([len(txt) for txt in self.lang1])
         self.max_lang2_length = max([len(txt) for txt in self.lang2])
         
-        print("English to Hindi Dataset")
+        print("Indic to English Dataset")
         print("No.of samples:", len(self.lang1))
         print("No.of unique input tokens:", self.lang1_vocab_size)
         print("No.of unique output tokens:", self.lang2_vocab_size)
@@ -134,7 +153,7 @@ class Indic_Eng_Dataset():
         lang2_words = []
         for line in transliterationCorpus:
             wordlist1 = clean_English_Vocab(line[0].text)
-            wordlist2 = lang_vocab_cleaner(line[1].text, self.target_characters)
+            wordlist2 = lang_vocab_cleaner(line[1].text, self.input_characters)
             
             # Skip noisy data
             if len(wordlist1) != len(wordlist2):

@@ -1,5 +1,4 @@
-from dataset import Eng_Indic_Dataset 
-from language_preprocessing import clean_Vocab
+from dataset import Eng_Indic_Eng_Dataset
 import config
 
 import numpy as np
@@ -46,32 +45,36 @@ def decode_sequence(input_seq, model, dic):
         states_value = [h, c]
     return decoded_sentence
 
-def predict(input_text, name, dic):
-    
-    input_seq = np.zeros((1, config.english_max_length, config.english_vocab_size), dtype="float32")
+def predict(input_text, name, input_dic, target_dic):
+    input_seq = np.zeros((1, input_dic['max_length'], input_dic['vocab_size']), dtype="float32")
     for t, char in enumerate(input_text.upper()):
-        input_seq[0, t, config.english_token_index[char]] = 1.0
-    input_seq[0, t + 1 :, config.english_token_index[" "]] = 1.0
+        input_seq[0, t, input_dic['char_index'][char]] = 1.0
+    input_seq[0, t + 1 :, input_dic['char_index'][" "]] = 1.0
     model = load_model(f"./models/{name}.h5")
-    translation = decode_sequence(input_seq, model, dic)
+    translation = decode_sequence(input_seq, model, target_dic)
     return translation
 
 if __name__ == "__main__":
     
-    # lang = 'EnHe'
-    # data_xml = Path(f'./input/Training/NEWS2012-Training-{lang}.xml')
-    # dataset = Eng_Indic_Dataset(data_xml, clean_Vocab, config.hebrew_alphabets)
-    # encoder_input_data, decoder_input_data, decoder_target_data = dataset.encode_data()
-    # train(dataset, 100, lang)
-    # model = load_model(f"./models/{lang}.h5")
-    # i = np.random.choice(len(dataset.lang1))
-    # input_seq = encoder_input_data[i:i+1]
-    # translation = decode_sequence(input_seq, model, config.hebrew)
-    # print('-')
-    # print('Input:', dataset.lang1[i])
-    # print('Orginal:', dataset.lang2[i])
-    # print('Translation:', translation)
     
-    print(predict('praveen', 'EnHi', config.hindi))
+    # For training
+    # Hindi
     
+    lang = 'HiEn'
+    data_xml = Path(f'./input/Training/NEWS2012-Training-EnHi.xml')
+    input_dic, output_dic = config.prepare_input_output_dic(config.hindi_alphabets, config.english_alphabets)
     
+    dataset = Eng_Indic_Eng_Dataset(data_xml, input_dic['alphabets'], output_dic['alphabets'])
+    encoder_input_data, decoder_input_data, decoder_target_data = dataset.encode_data()
+    train(dataset, 75, lang)
+    model = load_model(f"./models/{lang}.h5")
+    i = np.random.choice(len(dataset.lang1))
+    input_seq = encoder_input_data[i:i+1]
+    translation = decode_sequence(input_seq, model, output_dic)
+    print('-')
+    print('Input:', dataset.lang1[i])
+    print('Orginal:', dataset.lang2[i])
+    print('Translation:', translation)
+    
+    # input_dic, output_dic = config.prepare_input_output_dic(config.english_alphabets, config.hindi_alphabets)
+    # print(predict('Hello', 'EnHi', input_dic, output_dic))
