@@ -1,7 +1,6 @@
 import numpy as np
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.layers import Input, LSTM, Dense
-from keras.models import load_model
 
 
 def create_enocder_decoder_model(lang1_vocab_size, lang2_vocab_size):

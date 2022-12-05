@@ -116,3 +116,7 @@ if st.button("Indic to English"):
         st.subheader(translated)
     else:
         pass
+
+
+st.write("For source code please visit my git [link](https://github.com/mallapraveen/Document-Extractor)")
+st.write("[My Profile](https://github.com/mallapraveen)")
