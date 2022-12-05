@@ -4,16 +4,19 @@ import config
 import numpy as np
 from pathlib import Path
 import lstm, gru
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.models import load_model
-
+from keras.optimizers import Adam
+from keras.models import load_model
+from keras.callbacks import EarlyStopping
 
 def train(dataset, model, model_name, epochs, language):
+    es = EarlyStopping(monitor="val_accuracy", mode="max", verbose=1, patience=5)
     encoder_input_data, decoder_input_data, decoder_target_data = dataset.encode_data()
     model.compile(
         optimizer=Adam(learning_rate=0.01, beta_1=0.9, beta_2=0.999),
         loss="categorical_crossentropy",
         metrics=["accuracy"],
+        callable=[es],
+        verbose=1,
     )
     model.fit(
         [encoder_input_data, decoder_input_data],
@@ -43,7 +46,7 @@ if __name__ == "__main__":
         dataset.lang1_vocab_size, dataset.lang2_vocab_size
     )
     model_name = "gru"
-    train(dataset, model, model_name, 75, lang)
+    # train(dataset, model, model_name, 75, lang)
     model = load_model(f"./models/{model_name}/{lang}.h5")
     i = np.random.choice(len(dataset.lang1))
     input_seq = encoder_input_data[i : i + 1]
