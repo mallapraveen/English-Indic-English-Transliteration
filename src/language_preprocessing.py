@@ -1,24 +1,25 @@
 import re
-from pathlib import Path
-import xml.etree.ElementTree as ET
 
 def create_Alphabet_Dict(alphabets) -> dict:
     return dict([(char, i) for i, char in enumerate(alphabets)])
 
+
 def clean_English_Vocab(line: str) -> list:
-    non_eng_letters_regex = re.compile('[^a-zA-Z ]')
-    line = line.replace('-', ' ').replace(',',' ').upper()
-    line = non_eng_letters_regex.sub('', line)
+    non_eng_letters_regex = re.compile("[^a-zA-Z ]")
+    line = line.replace("-", " ").replace(",", " ").upper()
+    line = non_eng_letters_regex.sub("", line)
     return line.split()
 
-def clean_Vocab(line:str, alphabets) -> list:
+
+def clean_Vocab(line: str, alphabets) -> list:
     dic = create_Alphabet_Dict(alphabets)
-    line = line.replace('-', ' ').replace(',', ' ')
-    cleaned_line = ''
+    line = line.replace("-", " ").replace(",", " ")
+    cleaned_line = ""
     for char in line:
-        if char in dic or char == ' ':
+        if char in dic or char == " ":
             cleaned_line += char
     return cleaned_line.split()
+
 
 # U+0080 ... U+00FF: Latin-1 Supplement
 # U+0100 ... U+017F: Latin Extended-A
@@ -47,8 +48,9 @@ def clean_Vocab(line:str, alphabets) -> list:
 # U+0C80 ... U+0CFF: Kannada
 # U+0D00 ... U+0D7F: Malayalam
 
+
 def clean_English_Vocab(line: str) -> list:
-    non_eng_letters_regex = re.compile('[^a-zA-Z ]')
-    line = line.replace('-', ' ').replace(',',' ').upper()
-    line = non_eng_letters_regex.sub('', line)
+    non_eng_letters_regex = re.compile("[^a-zA-Z ]")
+    line = line.replace("-", " ").replace(",", " ").upper()
+    line = non_eng_letters_regex.sub("", line)
     return line.split()
