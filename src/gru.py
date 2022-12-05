@@ -9,13 +9,13 @@ def create_enocder_decoder_model(lang1_vocab_size, lang2_vocab_size):
     
     # Encoder model
     encoder_inputs = Input(shape=(None, lang1_vocab_size))
-    encoder = GRU(hidden_dim, return_state=True)
+    encoder = GRU(hidden_dim, return_state=True, recurrent_initializer='glorot_uniform')
     encoder_outputs, state_h = encoder(encoder_inputs)
     
     # Decoder model
     
     decoder_inputs = Input(shape=(None, lang2_vocab_size))
-    decoder_gru = GRU(hidden_dim, return_sequences=True, return_state=True)
+    decoder_gru = GRU(hidden_dim, return_sequences=True, return_state=True, recurrent_initializer='glorot_uniform')
     decoder_outputs, _ = decoder_gru(decoder_inputs, initial_state=state_h)
     decoder_dense = Dense(lang2_vocab_size, activation='softmax')
     decoder_outputs = decoder_dense(decoder_outputs)

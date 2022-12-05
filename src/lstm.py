@@ -9,14 +9,14 @@ def create_enocder_decoder_model(lang1_vocab_size, lang2_vocab_size):
     
     # Encoder model
     encoder_inputs = Input(shape=(None, lang1_vocab_size))
-    encoder = LSTM(hidden_dim, return_state=True)
+    encoder = LSTM(hidden_dim, return_state=True, recurrent_initializer='glorot_uniform')
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
     
     # Decoder model
     encoder_states = [state_h, state_c]
     
     decoder_inputs = Input(shape=(None, lang2_vocab_size))
-    decoder_lstm = LSTM(hidden_dim, return_sequences=True, return_state=True)
+    decoder_lstm = LSTM(hidden_dim, return_sequences=True, return_state=True, recurrent_initializer='glorot_uniform')
     decoder_outputs, _, _ = decoder_lstm(decoder_inputs, initial_state=encoder_states)
     decoder_dense = Dense(lang2_vocab_size, activation='softmax')
     decoder_outputs = decoder_dense(decoder_outputs)
