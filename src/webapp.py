@@ -59,6 +59,8 @@ mapping = {
     ),
 }
 
+st.title("English to Indic translation using seq2seq models(LSTM, GRU, LSTM with Attention, Transformer-based)")
+
 st.write("# English to Indic Translation")
 arch = st.selectbox(
     "Select architecture to translate", ["LSTM", "GRU", "Transformer"], key=1
@@ -118,5 +120,5 @@ if st.button("Indic to English"):
         pass
 
 
-st.write("For source code please visit my git [link](https://github.com/mallapraveen/Document-Extractor)")
-st.write("[My Profile](https://github.com/mallapraveen)")
+st.subheader("For source code please visit my git [link](https://github.com/mallapraveen/Document-Extractor)")
+st.subheader("[My Profile](https://github.com/mallapraveen)")
