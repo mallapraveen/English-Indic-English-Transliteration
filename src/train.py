@@ -33,10 +33,100 @@ if __name__ == "__main__":
 
     ## LSTM Attention
 
-    lang = "TaEn"
-    data_xml = Path(f"./input/Training/NEWS2012-Training-EnTa.xml")
+    lang = "EnKa"
+    data_xml = Path(f"./input/Training/NEWS2012-Training-EnKa.xml")
     input_dic, output_dic = config.prepare_input_output_dic(
-        config.tamil_alphabets, config.english_alphabets
+        config.english_alphabets, config.kannada_alphabets
+    )
+
+    dataset = Eng_Indic_Eng_Dataset(
+        data_xml, input_dic["alphabets"], output_dic["alphabets"]
+    )
+    encoder_input_data, decoder_input_data, decoder_target_data = dataset.encode_data()
+    model = lstm_attention.create_enocder_decoder_model(
+        input_dic['vocab_size'], output_dic['vocab_size'], dataset.max_lang2_length
+    )
+    model_name = "lstm_attention"
+    train(dataset, model, model_name, 25, lang, True)
+    model = load_model(f"./models/{model_name}/{lang}")
+    i = np.random.choice(len(dataset.lang1))
+    input_seq = encoder_input_data[i : i + 1]
+    translation = lstm_attention.decode_sequence(input_seq, model, output_dic)
+    print("-")
+    print("Input:", dataset.lang1[i])
+    print("Orginal:", dataset.lang2[i])
+    print("Translation:", translation)
+
+    # input_dic, output_dic = config.prepare_input_output_dic(
+    #     config.tamil_alphabets, config.english_alphabets
+    # )
+    # print(lstm_attention.predict("Malla", "EnTa", input_dic, output_dic))
+    
+    lang = "KaEn"
+    data_xml = Path(f"./input/Training/NEWS2012-Training-EnKa.xml")
+    input_dic, output_dic = config.prepare_input_output_dic(
+        config.kannada_alphabets, config.english_alphabets
+    )
+
+    dataset = Eng_Indic_Eng_Dataset(
+        data_xml, input_dic["alphabets"], output_dic["alphabets"]
+    )
+    encoder_input_data, decoder_input_data, decoder_target_data = dataset.encode_data()
+    model = lstm_attention.create_enocder_decoder_model(
+        input_dic['vocab_size'], output_dic['vocab_size'], dataset.max_lang2_length
+    )
+    model_name = "lstm_attention"
+    train(dataset, model, model_name, 25, lang, True)
+    model = load_model(f"./models/{model_name}/{lang}")
+    i = np.random.choice(len(dataset.lang1))
+    input_seq = encoder_input_data[i : i + 1]
+    translation = lstm_attention.decode_sequence(input_seq, model, output_dic)
+    print("-")
+    print("Input:", dataset.lang1[i])
+    print("Orginal:", dataset.lang2[i])
+    print("Translation:", translation)
+
+    # input_dic, output_dic = config.prepare_input_output_dic(
+    #     config.tamil_alphabets, config.english_alphabets
+    # )
+    # print(lstm_attention.predict("Malla", "EnTa", input_dic, output_dic))
+    
+    
+    
+    lang = "EnBa"
+    data_xml = Path(f"./input/Training/NEWS2012-Training-EnBa.xml")
+    input_dic, output_dic = config.prepare_input_output_dic(
+        config.english_alphabets, config.bangla_alphabets
+    )
+
+    dataset = Eng_Indic_Eng_Dataset(
+        data_xml, input_dic["alphabets"], output_dic["alphabets"]
+    )
+    encoder_input_data, decoder_input_data, decoder_target_data = dataset.encode_data()
+    model = lstm_attention.create_enocder_decoder_model(
+        input_dic['vocab_size'], output_dic['vocab_size'], dataset.max_lang2_length
+    )
+    model_name = "lstm_attention"
+    train(dataset, model, model_name, 25, lang, True)
+    model = load_model(f"./models/{model_name}/{lang}")
+    i = np.random.choice(len(dataset.lang1))
+    input_seq = encoder_input_data[i : i + 1]
+    translation = lstm_attention.decode_sequence(input_seq, model, output_dic)
+    print("-")
+    print("Input:", dataset.lang1[i])
+    print("Orginal:", dataset.lang2[i])
+    print("Translation:", translation)
+
+    # input_dic, output_dic = config.prepare_input_output_dic(
+    #     config.tamil_alphabets, config.english_alphabets
+    # )
+    # print(lstm_attention.predict("Malla", "EnTa", input_dic, output_dic))
+    
+    
+    lang = "BaEn"
+    data_xml = Path(f"./input/Training/NEWS2012-Training-EnBa.xml")
+    input_dic, output_dic = config.prepare_input_output_dic(
+        config.bangla_alphabets, config.english_alphabets
     )
 
     dataset = Eng_Indic_Eng_Dataset(

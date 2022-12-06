@@ -36,7 +36,7 @@ def prepare_input_output_dic(input_characters, target_characters):
 
 english_alphabets = sorted(list("ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
 
-# hindi
+# Hindi
 
 hindi_alphabets = sorted([chr(alpha) for alpha in range(2304, 2432)])
 
@@ -51,3 +51,7 @@ tamil_alphabets = sorted([chr(alpha) for alpha in range(2944, 3071)])
 # Kannada
 
 kannada_alphabets = sorted([chr(alpha) for alpha in range(3200, 3327)])
+
+# Marathi
+
+marathi_alphabets = sorted([chr(alpha) for alpha in range(2304, 2432)])
