@@ -28,7 +28,8 @@ def get_inference_model(model):
     hidden_dim = 256
     # inference
     encoder_inputs = model.input[0]
-    encoder_outputs, state_h_enc = model.layers[2].output
+    encoder_gru = model.layers[2]
+    encoder_outputs, state_h_enc = encoder_gru(encoder_inputs)
     encoder_model = Model(encoder_inputs, state_h_enc)
     
     decoder_inputs = model.input[1]

@@ -63,11 +63,11 @@ st.title("English to Indic translation using seq2seq models(LSTM, GRU, LSTM with
 
 st.write("# English to Indic Translation")
 arch = st.selectbox(
-    "Select architecture to translate", ["LSTM", "GRU", "Transformer"], key=1
+    "Select architecture to translate", ["LSTM", "GRU", "LSTM_BahdanauAttention","Transformer"], key=1
 )
 english = st.text_input("Enter text to be translated to Indic")
 language = st.selectbox(
-    "Select language to translate", ["Hindi", "Tamil", "Bangla", "Kannada", "Hebrew"]
+    "Select language to translate", ["Hindi", "Tamil", "Bangla", "Kannada"]
 )
 if st.button("English to Indic"):
     if arch == "LSTM":
@@ -92,11 +92,11 @@ if st.button("English to Indic"):
 
 st.write("# Indic to English Translation")
 arch = st.selectbox(
-    "Select architecture to translate", ["LSTM", "GRU", "Transformer"], key=2
+    "Select architecture to translate", ["LSTM", "GRU", "LSTM_BahdanauAttention", "Transformer"], key=2
 )
 language = st.selectbox(
     "Select Indic language to translate",
-    ["Hindi", "Tamil", "Bangla", "Kannada", "Hebrew"],
+    ["Hindi", "Tamil", "Bangla", "Kannada"],
 )
 indic = st.text_input(f"Enter {language} text to be translated to English")
 if st.button("Indic to English"):

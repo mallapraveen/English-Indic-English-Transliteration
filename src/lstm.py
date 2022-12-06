@@ -37,16 +37,19 @@ def get_inference_model(model):
     hidden_dim = 256
     # inference
     encoder_inputs = model.input[0]
-    encoder_outputs, state_h_enc, state_c_enc = model.layers[2].output
+    encoder_lstm = model.layers[2]
+    encoder_outputs, state_h_enc, state_c_enc = encoder_lstm(encoder_inputs)
     encoder_states = [state_h_enc, state_c_enc]
     encoder_model = Model(encoder_inputs, encoder_states)
 
     decoder_inputs = model.input[1]
+    # deocder_h shape (1, 256)
     decoder_state_input_h = Input(shape=(hidden_dim,), name="input_3")
     decoder_state_input_c = Input(shape=(hidden_dim,), name="input_4")
 
     decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
     decoder_lstm = model.layers[3]
+    # decoder_output shape = (1, 1, 29)
     decoder_outputs, state_h_dec, state_c_dec = decoder_lstm(
         decoder_inputs, initial_state=decoder_states_inputs
     )
@@ -73,7 +76,6 @@ def decode_sequence(input_seq, model, dic):
     decoded_sentence = ""
     while not stop_condition:
         output_tokens, h, c = decoder_model.predict([target_seq] + states_value)
-
         sampled_token_index = np.argmax(output_tokens[0, -1, :])
         sampled_char = dic["reverse_char_index"][sampled_token_index]
         decoded_sentence += sampled_char

@@ -66,7 +66,7 @@ class Eng_Indic_Eng_Dataset():
             
             # Skip noisy data
             if len(wordlist1) != len(wordlist2):
-                print('Skipping: ', line[0].text, ' - ', line[1].text)
+                # print('Skipping: ', line[0].text, ' - ', line[1].text)
                 continue
 
             for word in wordlist1:
