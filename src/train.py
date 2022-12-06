@@ -33,10 +33,10 @@ if __name__ == "__main__":
 
     ## LSTM Attention
 
-    lang = "EnTa"
+    lang = "TaEn"
     data_xml = Path(f"./input/Training/NEWS2012-Training-EnTa.xml")
     input_dic, output_dic = config.prepare_input_output_dic(
-        config.english_alphabets, config.tamil_alphabets
+        config.tamil_alphabets, config.english_alphabets
     )
 
     dataset = Eng_Indic_Eng_Dataset(
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         input_dic['vocab_size'], output_dic['vocab_size'], dataset.max_lang2_length
     )
     model_name = "lstm_attention"
-    train(dataset, model, model_name, 30, lang, True)
+    train(dataset, model, model_name, 25, lang, True)
     model = load_model(f"./models/{model_name}/{lang}")
     i = np.random.choice(len(dataset.lang1))
     input_seq = encoder_input_data[i : i + 1]
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     print("Orginal:", dataset.lang2[i])
     print("Translation:", translation)
 
-    input_dic, output_dic = config.prepare_input_output_dic(
-        config.english_alphabets, config.tamil_alphabets
-    )
-    print(lstm_attention.predict("Malla", "EnTa", input_dic, output_dic))
+    # input_dic, output_dic = config.prepare_input_output_dic(
+    #     config.tamil_alphabets, config.english_alphabets
+    # )
+    # print(lstm_attention.predict("Malla", "EnTa", input_dic, output_dic))

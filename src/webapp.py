@@ -3,7 +3,7 @@ import os
 port = os.getenv("PORT", default=8000)
 
 import config
-import lstm, gru
+import lstm, gru, lstm_attention
 import streamlit as st
 
 mapping = {
@@ -46,17 +46,7 @@ mapping = {
         config.prepare_input_output_dic(
             config.kannada_alphabets, config.english_alphabets
         ),
-    ),
-    "Hebrew": (
-        "EnHe",
-        config.prepare_input_output_dic(
-            config.english_alphabets, config.hebrew_alphabets
-        ),
-        "HeEn",
-        config.prepare_input_output_dic(
-            config.hebrew_alphabets, config.hebrew_alphabets
-        ),
-    ),
+    )
 }
 
 st.title("English to Indic translation using seq2seq models(LSTM, GRU, LSTM with Attention, Transformer-based)")
@@ -86,8 +76,17 @@ if st.button("English to Indic"):
         )
         translated = gru.predict(english, name, input_dic, output_dic)
         st.subheader(translated)
+    elif arch == "LSTM_BahdanauAttention":
+        name, input_dic, output_dic = (
+            mapping[language][0],
+            mapping[language][1][0],
+            mapping[language][1][1],
+        )
+        translated = lstm_attention.predict(english, name, input_dic, output_dic)
+        st.subheader(translated)
     else:
         pass
+
 
 
 st.write("# Indic to English Translation")
@@ -115,6 +114,14 @@ if st.button("Indic to English"):
             mapping[language][3][1],
         )
         translated = gru.predict(indic, name, input_dic, output_dic)
+        st.subheader(translated)
+    elif arch == "LSTM_BahdanauAttention":
+        name, input_dic, output_dic = (
+            mapping[language][2],
+            mapping[language][3][0],
+            mapping[language][3][1],
+        )
+        translated = lstm_attention.predict(indic, name, input_dic, output_dic)
         st.subheader(translated)
     else:
         pass

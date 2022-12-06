@@ -51,7 +51,3 @@ tamil_alphabets = sorted([chr(alpha) for alpha in range(2944, 3071)])
 # Kannada
 
 kannada_alphabets = sorted([chr(alpha) for alpha in range(3200, 3327)])
-
-# Hebrew
-
-hebrew_alphabets = sorted([chr(alpha) for alpha in range(1424, 1535)])
